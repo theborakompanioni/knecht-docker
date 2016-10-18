@@ -1,0 +1,91 @@
+version: '2'
+services:
+
+  ## mesos: distributed systems kernel
+  zookeeper:
+    image: jplock/zookeeper:3.4.9
+    restart: unless-stopped
+    ports:
+      - "2181:2181"
+
+
+  ## mesos: distributed systems kernel
+  master:
+    image: mesoscloud/mesos-master:0.28.1-ubuntu
+    restart: unless-stopped
+    hostname: master
+    links:
+      - zookeeper:zookeeper
+    environment:
+      - MESOS_ZK=zk://zookeeper:2181/mesos
+      - MESOS_QUORUM=1
+      - MESOS_WORK_DIR=/var/lib/mesos
+      - MESOS_LOG_DIR=/var/log
+    volumes:
+      - ./docker-data/mesosmaster-stuff/log:/var/log
+      - ./docker-data/mesosmaster-stuff/work:/var/lib/mesos
+    ports:
+      - "5050:5050"
+
+
+  ## mesos slave: distributed systems kernel
+  slave:
+    image: mesoscloud/mesos-slave:0.28.1-ubuntu
+    restart: unless-stopped
+    links:
+      - zookeeper:zookeeper
+      - master:master
+    environment:
+      - MESOS_MASTER=zk://zookeeper:2181/mesos
+      - MESOS_EXECUTOR_REGISTRATION_TIMEOUT=5mins
+      - MESOS_CONTAINERIZERS=docker,mesos
+      - MESOS_ISOLATOR=cgroups/cpu,cgroups/mem
+      - MESOS_LOG_DIR=/var/log
+    volumes:
+      - /var/run/docker.sock:/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
+      - /sys:/sys:ro
+      - ./docker-data/mesosslave-stuff/log:/var/log
+    expose:
+      - "5051"
+    ports:
+      - "5051:5051"
+
+
+  ## marathon: orchestration platform for mesos
+  marathon:
+    image: mesosphere/marathon:v1.3.3
+    restart: unless-stopped
+    links:
+      - zookeeper:zookeeper
+    ports:
+      - "8080:8080"
+    # this image does not respect MARATHON_ env variables, so adding the params via command
+    command: --master zk://zookeeper:2181/mesos --zk zk://zookeeper:2181/marathon
+
+
+  ## jenkins build server
+  jenkins:
+    image: lkwg82/jenkins_with_docker
+    links:
+      - marathon:marathon
+    volumes:
+      - ./docker-data/jenkins-stuff/home:/var/jenkins_home
+      - ./docker-data/jenkins-stuff/data:/var/jenkins_data
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
+    ports:
+      - "8081:8080"
+
+
+  ## docker registry
+  registry:
+    image: registry:2.5.1
+    restart: unless-stopped
+    environment:
+      - STORAGE_PATH=/registry
+    volumes:
+      - ./docker-data/registry-stuff:/registry
+    ports:
+      - "5000:5000"
+

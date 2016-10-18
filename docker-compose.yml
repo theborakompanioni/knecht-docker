@@ -3,6 +3,7 @@ services:
 
   ## mesos: distributed systems kernel
   zookeeper:
+    container_name: knecht-zookeeper1
     image: jplock/zookeeper:3.4.9
     restart: unless-stopped
     ports:
@@ -11,9 +12,12 @@ services:
 
   ## mesos: distributed systems kernel
   master:
+    container_name: knecht-mesos-master1
     image: mesoscloud/mesos-master:0.28.1-ubuntu
     restart: unless-stopped
     hostname: master
+    depends_on:
+        - zookeeper
     links:
       - zookeeper:zookeeper
     environment:
@@ -30,8 +34,12 @@ services:
 
   ## mesos slave: distributed systems kernel
   slave:
+    container_name: knecht-mesos-slave1
     image: mesoscloud/mesos-slave:0.28.1-ubuntu
     restart: unless-stopped
+    depends_on:
+        - zookeeper
+        - master
     links:
       - zookeeper:zookeeper
       - master:master
@@ -54,8 +62,11 @@ services:
 
   ## marathon: orchestration platform for mesos
   marathon:
+    container_name: knecht-marathon1
     image: mesosphere/marathon:v1.3.3
     restart: unless-stopped
+    depends_on:
+        - zookeeper
     links:
       - zookeeper:zookeeper
     ports:
@@ -66,7 +77,9 @@ services:
 
   ## jenkins build server
   jenkins:
+    container_name: knecht-jenkins1
     image: lkwg82/jenkins_with_docker
+    restart: unless-stopped
     links:
       - marathon:marathon
     volumes:
@@ -80,6 +93,7 @@ services:
 
   ## docker registry
   registry:
+    container_name: knecht-registry1
     image: registry:2.5.1
     restart: unless-stopped
     environment:
@@ -88,4 +102,3 @@ services:
       - ./docker-data/registry-stuff:/registry
     ports:
       - "5000:5000"
-

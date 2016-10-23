@@ -24,9 +24,7 @@ services:
     networks:
       - logging
     environment:
-      # otherwise logstash will keep sending its own logs to itself over and
-      # over... not fun
-      - LOGSPOUT=ignore
+      - LOGSPOUT=ignore # otherwise logstash will keep sending its own logs to itself
     command: -f /etc/logstash.sample.conf
     logging:
       driver: none
@@ -38,6 +36,8 @@ services:
       - "8084:80"
     networks:
       - logging
+    environment:
+      - LOGSPOUT=ignore
 
   logspout:
     image: gliderlabs/logspout:master

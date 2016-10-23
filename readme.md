@@ -1,10 +1,16 @@
 knecht-docker
 =====
 
+A local development build environment using mesos, marathon, jenkins and a lot of other stuff.
+
 - [mesos](https://mesos.apache.org/)
 - [marathon](https://mesosphere.github.io/marathon/)
 - [docker-registry](https://docs.docker.com/registry/)
 - [zookeeper](https://zookeeper.apache.org/)
+- [elasticsearch](https://www.elastic.co/products/elasticsearch)
+- [logstash](https://www.elastic.co/products/logstash)
+- [kibana](https://www.elastic.co/products/kibana)
+- [logspout](https://github.com/gliderlabs/logspout)
 - [jenkins](https://jenkins.io/)
 
 
@@ -12,7 +18,6 @@ knecht-docker
 
 
 # todo
-- use elk stack to centralize logs
 - use telegraf (with httpjson input e.g. for marathon metrics) and influxdb to monitor metrics
 - use marathon-lb as loadbalancer
 

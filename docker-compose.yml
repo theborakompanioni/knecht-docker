@@ -1,5 +1,48 @@
 version: '2'
+
+networks:
+  logging:
+    driver: bridge
+
 services:
+
+  ## elasticsearch + logstash + kibana
+  #elk:
+  #  container_name: knecht-elk1
+  #  image: sebp/elk:es241_l240_k461
+  #  restart: unless-stopped
+  #  environment:
+  #    - ELASTICSEARCH_START=1
+  #    - LOGSTASH_START=1
+  #    - KIBANA_START=1
+  #    - ES_HEAP_SIZE=2g
+  #    - LS_HEAP_SIZE=1g
+  #    - LOGSPOUT=ignore
+  #  volumes:
+  #    - ./docker-data/elk-stuff/elasticsearch/:/var/lib/elasticsearch
+  #  ports:
+  #    - "5601:5601"
+  #    - "9200:9200"
+  #    - "5044:5044"
+  #    - "5000:5000"
+  #    - "5000:5000/udp"
+
+  ## logspout: log router for docker
+  #logspout:
+  #  container_name: knecht-logspout1
+  #  image: gliderlabs/logspout:master
+  #  restart: unless-stopped
+  #  environment:
+  #    - DEBUG=true
+  #  volumes:
+  #    - /var/run/docker.sock:/var/run/docker.sock
+  #  depends_on:
+  #    - elk
+  #  links:
+  #    - elk:elk
+  #  ports:
+  #    - "8083:80"
+  #  command: syslog://elk:5000
 
   ## mesos: distributed systems kernel
   zookeeper:
@@ -17,7 +60,7 @@ services:
     restart: unless-stopped
     hostname: master
     depends_on:
-        - zookeeper
+      - zookeeper
     links:
       - zookeeper:zookeeper
     environment:
@@ -38,8 +81,8 @@ services:
     image: mesoscloud/mesos-slave:0.28.1-ubuntu
     restart: unless-stopped
     depends_on:
-        - zookeeper
-        - master
+      - zookeeper
+      - master
     links:
       - zookeeper:zookeeper
       - master:master
@@ -63,10 +106,11 @@ services:
   ## marathon: orchestration platform for mesos
   marathon:
     container_name: knecht-marathon1
-    image: mesosphere/marathon:v1.3.3
+    #image: mesosphere/marathon:v1.3.3
+    image: mesosphere/marathon:v1.4.0-snap16
     restart: unless-stopped
     depends_on:
-        - zookeeper
+      - zookeeper
     links:
       - zookeeper:zookeeper
     ports:
@@ -80,6 +124,8 @@ services:
     container_name: knecht-jenkins1
     image: lkwg82/jenkins_with_docker
     restart: unless-stopped
+    depends_on:
+      - marathon
     links:
       - marathon:marathon
     volumes:
@@ -101,4 +147,43 @@ services:
     volumes:
       - ./docker-data/registry-stuff:/registry
     ports:
-      - "5000:5000"
+      - "5001:5000"
+
+  elasticsearch:
+    extends:
+      file: docker-compose-common.yml
+      service: elasticsearch
+    build: dockerfiles/elasticsearch
+    container_name: knecht-elasticsearch1
+
+  logstash:
+    extends:
+      file: docker-compose-common.yml
+      service: logstash
+    build: dockerfiles/logstash
+    container_name: knecht-logstash1
+    links:
+      - elasticsearch:elasticsearch
+    networks:
+      - logging
+
+  kibana:
+    extends:
+      file: docker-compose-common.yml
+      service: kibana
+    build: dockerfiles/kibana
+    container_name: knecht-kibana1
+
+  logspout:
+    extends:
+      file: docker-compose-common.yml
+      service: logspout
+    container_name: knecht-logspout1
+    links:
+      - logstash:logstash
+
+  cadvisor:
+    extends:
+      file: docker-compose-common.yml
+      service: cadvisor
+    container_name: knecht-cadvisor1

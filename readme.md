@@ -7,7 +7,14 @@ knecht-docker
 - [zookeeper](https://zookeeper.apache.org/)
 - [jenkins](https://jenkins.io/)
 
+
 ![logo](https://raw.githubusercontent.com/theborakompanioni/knecht-docker/master/assets/diagram.jpg)
+
+
+# todo
+- use elk stack to centralize logs
+- use telegraf (with httpjson input e.g. for marathon metrics) and influxdb to monitor metrics
+- use marathon-lb as loadbalancer
 
 # links
 - https://container-solutions.com/continuous-delivery-with-docker-on-mesos-in-less-than-a-minute/

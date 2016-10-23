@@ -1,52 +1,98 @@
 version: '2'
 
-networks:
-  logging:
-    driver: bridge
-
 services:
-  elasticsearch:
-    restart: unless-stopped
-    ports:
-      - "9200:9200"
-      - "9300:9300"
-    networks:
-      - logging
-    volumes:
-      - ./docker-data/elk-stuff/elasticsearch/:/opt/elasticsearch/data
+    ## mesos: distributed systems kernel
+    zookeeper:
+      image: jplock/zookeeper:3.4.9
+      restart: unless-stopped
+      ports:
+        - "2181:2181"
 
-  logstash:
-    restart: unless-stopped
-    ports:
-      - "5000:5000"
-      - "5000:5000/udp"
-    networks:
-      - logging
-    environment:
-      - LOGSPOUT=ignore # otherwise logstash will keep sending its own logs to itself
-    command: -f /etc/logstash.sample.conf
-    logging:
-      driver: none
+    ## mesos: distributed systems kernel
+    master:
+      image: mesoscloud/mesos-master:0.28.1-ubuntu
+      restart: unless-stopped
+      hostname: master
+      #depends_on:
+      #  - zookeeper
+      #links:
+      #  - zookeeper:zookeeper
+      environment:
+        - MESOS_ZK=zk://zookeeper:2181/mesos
+        - MESOS_QUORUM=1
+        - MESOS_WORK_DIR=/var/lib/mesos
+        - MESOS_LOG_DIR=/var/log
+      volumes:
+        - ./docker-data/mesosmaster-stuff/log:/var/log
+        - ./docker-data/mesosmaster-stuff/work:/var/lib/mesos
+        - ./docker-data/mesosmaster-stuff/tmp:/tmp/mesos
+      ports:
+        - "5050:5050"
 
 
-  kibana:
-    restart: unless-stopped
-    ports:
-      - "8084:80"
-    networks:
-      - logging
-    environment:
-      - LOGSPOUT=ignore
+    ## mesos slave: distributed systems kernel
+    slave:
+      image: mesoscloud/mesos-slave:0.28.1-ubuntu
+      restart: unless-stopped
+      #depends_on:
+      #  - zookeeper
+      #  - master
+      #links:
+      #  - zookeeper:zookeeper
+      #  - master:master
+      environment:
+        - MESOS_MASTER=zk://zookeeper:2181/mesos
+        - MESOS_EXECUTOR_REGISTRATION_TIMEOUT=5mins
+        - MESOS_CONTAINERIZERS=docker,mesos
+        - MESOS_ISOLATOR=cgroups/cpu,cgroups/mem
+        - MESOS_LOG_DIR=/var/log
+      volumes:
+        - /var/run/docker.sock:/run/docker.sock
+        - /usr/bin/docker:/usr/bin/docker
+        - /sys:/sys:ro
+        - ./docker-data/mesosslave-stuff/log:/var/log
+        - ./docker-data/mesosslave-stuff/tmp:/tmp/mesos
+      expose:
+        - "5051"
+      ports:
+        - "5051:5051"
 
-  logspout:
-    image: gliderlabs/logspout:master
-    restart: unless-stopped
-    environment:
-      - DEBUG=true
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    ports:
-      - "8083:80"
-    networks:
-      - logging
-    command: syslog://logstash:5000
+
+    ## marathon: orchestration platform for mesos
+    marathon:
+      #image: mesosphere/marathon:v1.3.3
+      image: mesosphere/marathon:v1.4.0-snap16
+      restart: unless-stopped
+      #depends_on:
+      #  - zookeeper
+      #links:
+      #  - zookeeper:zookeeper
+      ports:
+        - "8080:8080"
+      # this image does not respect MARATHON_ env variables, so adding the params via command
+      command: --master zk://zookeeper:2181/mesos --zk zk://zookeeper:2181/marathon
+
+
+    ## jenkins build server
+    jenkins:
+      image: lkwg82/jenkins_with_docker
+      restart: unless-stopped
+      volumes:
+        - ./docker-data/jenkins-stuff/home:/var/jenkins_home
+        - ./docker-data/jenkins-stuff/data:/var/jenkins_data
+        - /var/run/docker.sock:/var/run/docker.sock
+        - /usr/bin/docker:/usr/bin/docker
+      ports:
+        - "8081:8080"
+
+    ## docker registry
+    registry:
+      container_name: knecht-registry1
+      image: registry:2.5.1
+      restart: unless-stopped
+      environment:
+        - STORAGE_PATH=/registry
+      volumes:
+        - ./docker-data/registry-stuff:/registry
+      ports:
+        - "5001:5000"

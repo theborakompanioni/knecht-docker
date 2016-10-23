@@ -1,56 +1,6 @@
 version: '2'
 
-networks:
-  logging:
-    driver: bridge
-
 services:
-  elasticsearch:
-    restart: unless-stopped
-    ports:
-      - "9200:9200"
-      - "9300:9300"
-    networks:
-      - logging
-    volumes:
-    #  - ./docker-data/elk-stuff/elasticsearch/:/var/lib/elasticsearch
-      - ./docker-data/elk-stuff/elasticsearch/:/opt/elasticsearch/data
-
-  logstash:
-    restart: unless-stopped
-    ports:
-      - "5000:5000"
-      - "5000:5000/udp"
-    networks:
-      - logging
-    environment:
-      - LOGSPOUT=ignore # otherwise logstash will keep sending its own logs to itself
-    command: -f /etc/logstash.sample.conf
-    logging:
-      driver: none
-
-
-  kibana:
-    restart: unless-stopped
-    ports:
-      - "8084:80"
-    networks:
-      - logging
-    environment:
-      - LOGSPOUT=ignore
-
-  logspout:
-    image: gliderlabs/logspout:master
-    restart: unless-stopped
-    environment:
-      - DEBUG=true
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    ports:
-      - "8083:80"
-    networks:
-      - logging
-    command: syslog://logstash:5000
 
   ## cadvisor: resource usage and performance of containers
   cadvisor:

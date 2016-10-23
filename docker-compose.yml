@@ -6,44 +6,6 @@ networks:
 
 services:
 
-  ## elasticsearch + logstash + kibana
-  #elk:
-  #  container_name: knecht-elk1
-  #  image: sebp/elk:es241_l240_k461
-  #  restart: unless-stopped
-  #  environment:
-  #    - ELASTICSEARCH_START=1
-  #    - LOGSTASH_START=1
-  #    - KIBANA_START=1
-  #    - ES_HEAP_SIZE=2g
-  #    - LS_HEAP_SIZE=1g
-  #    - LOGSPOUT=ignore
-  #  volumes:
-  #    - ./docker-data/elk-stuff/elasticsearch/:/var/lib/elasticsearch
-  #  ports:
-  #    - "5601:5601"
-  #    - "9200:9200"
-  #    - "5044:5044"
-  #    - "5000:5000"
-  #    - "5000:5000/udp"
-
-  ## logspout: log router for docker
-  #logspout:
-  #  container_name: knecht-logspout1
-  #  image: gliderlabs/logspout:master
-  #  restart: unless-stopped
-  #  environment:
-  #    - DEBUG=true
-  #  volumes:
-  #    - /var/run/docker.sock:/var/run/docker.sock
-  #  depends_on:
-  #    - elk
-  #  links:
-  #    - elk:elk
-  #  ports:
-  #    - "8083:80"
-  #  command: syslog://elk:5000
-
   ## mesos: distributed systems kernel
   zookeeper:
     container_name: knecht-zookeeper1
@@ -151,14 +113,14 @@ services:
 
   elasticsearch:
     extends:
-      file: docker-compose-common.yml
+      file: docker-compose-elk-common.yml
       service: elasticsearch
     build: dockerfiles/elasticsearch
     container_name: knecht-elasticsearch1
 
   logstash:
     extends:
-      file: docker-compose-common.yml
+      file: docker-compose-elk-common.yml
       service: logstash
     build: dockerfiles/logstash
     container_name: knecht-logstash1
@@ -169,14 +131,14 @@ services:
 
   kibana:
     extends:
-      file: docker-compose-common.yml
+      file: docker-compose-elk-common.yml
       service: kibana
     build: dockerfiles/kibana
     container_name: knecht-kibana1
 
   logspout:
     extends:
-      file: docker-compose-common.yml
+      file: docker-compose-elk-common.yml
       service: logspout
     container_name: knecht-logspout1
     links:

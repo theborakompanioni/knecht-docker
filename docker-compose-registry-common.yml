@@ -1,0 +1,43 @@
+version: '2'
+
+services:
+  ## docker registry
+  registry:
+    image: registry:2.5.1
+    #image: registry:2.2.0
+    environment:
+      - STORAGE_PATH=/registry
+    volumes:
+      # Mount the config directory
+      - ./docker-data/registry-stuff:/registry:ro
+    volumes:
+      - ./dockerfiles/registry/config:/registry:ro
+      # Make the registry storage persistent (see ./config/config.yml for the path)
+      - ./dockerfiles/registry/storage:/var/lib/registry:rw
+      # Mount our own certificate and key
+      - ./dockerfiles/registry/certs:/certs:ro
+    ports:
+      # Publish registry's port 5000 on the IP 0.0.0.0 on port 5000
+      - "5001:5000"
+
+
+  ## docker registry frontend
+  registryui:
+    image: konradkleine/docker-registry-frontend:v2
+    #links:
+    #  - registry:registry
+    ports:
+      # Publish the frontend's port 443 on the IP 0.0.0.0 on port 8443
+      - "8443:443"
+    volumes:
+      - ./dockerfiles/registry/frontend/certs/frontend.crt:/etc/apache2/server.crt:ro
+      - ./dockerfiles/registry/frontend/certs/frontend.key:/etc/apache2/server.key:ro
+    environment:
+      # The front-end is SSL protected
+      - ENV_USE_SSL=yes
+      - ENV_DOCKER_REGISTRY_HOST=registry
+      - ENV_DOCKER_REGISTRY_PORT=5001
+      # The registry is SSL protected as well
+      - ENV_DOCKER_REGISTRY_USE_SSL=1
+
+

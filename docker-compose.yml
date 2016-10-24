@@ -3,6 +3,8 @@ version: '2'
 networks:
   logging:
     driver: bridge
+  dockerregistry:
+    driver: bridge
 
 services:
 
@@ -80,16 +82,31 @@ services:
       - marathon
     links:
       - marathon:marathon
+###
+# dev build environment (end)
+###
 
 
+###
+# docker registry
+###
   registry:
     extends:
-      file: docker-compose-dev-common.yml
+      file: docker-compose-registry-common.yml
       service: registry
     container_name: knecht-registry1
 
+  registryui:
+    extends:
+      file: docker-compose-registry-common.yml
+      service: registryui
+    container_name: knecht-registry-ui1
+    depends_on:
+      - registry
+    links:
+      - registry:registry
 ###
-# dev build environment (end)
+# docker registry (end)
 ###
 
 ###

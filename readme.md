@@ -3,27 +3,44 @@ knecht-docker
 
 A local development build environment using mesos, marathon, jenkins and a lot of other stuff.
 
-- [mesos](https://mesos.apache.org/)
-- [marathon](https://mesosphere.github.io/marathon/)
-- [marathon-lb](https://github.com/mesosphere/marathon-lb/)
+- [cadvisor](https://github.com/google/cadvisor)
 - [docker-registry](https://docs.docker.com/registry/)
-- [zookeeper](https://zookeeper.apache.org/)
+- [docker-registry-frontend](https://github.com/kwk/docker-registry-frontend)
 - [elasticsearch](https://www.elastic.co/products/elasticsearch)
-- [logstash](https://www.elastic.co/products/logstash)
+- [jenkins](https://jenkins.io/)
 - [kibana](https://www.elastic.co/products/kibana)
 - [logspout](https://github.com/gliderlabs/logspout)
-- [jenkins](https://jenkins.io/)
+- [logstash](https://www.elastic.co/products/logstash)
+- [marathon](https://mesosphere.github.io/marathon/)
+- [marathon-lb](https://github.com/mesosphere/marathon-lb/)
+- [mesos](https://mesos.apache.org/)
+- [zookeeper](https://zookeeper.apache.org/)
 
 
 ![logo](https://raw.githubusercontent.com/theborakompanioni/knecht-docker/master/assets/diagram.jpg)
 
 # environment
-- HAProxy: [http://localhost:11090/haproxy?stats](http://localhost:11090/haproxy?stats)
-- marathon: [http://localhost:8080/](http://localhost:8080/)
-- kibana: [http://localhost:8084/](http://localhost:8084/)
 
-## marathon-lb (work in progress)
-to use haproxy for docker containers use labels `"HAPROXY_GROUP":"external"` and `"HAPROXY_0_VHOST":"zero.example.com"`.
+## build
+- jenkins: [http://localhost:8081/](http://localhost:8081/)
+- docker-registry: [https://localhost:8443/](https://localhost:8443/)
+
+## deploy
+- marathon: [http://localhost:8080/](http://localhost:8080/)
+- mesos: [http://localhost:5050/](http://localhost:5050/)
+
+## loadbalancing (work in progress)
+- HAProxy: [http://localhost:11090/haproxy?stats](http://localhost:11090/haproxy?stats)
+
+to use haproxy for docker containers use labels `"HAPROXY_GROUP":"external"` and e.g. `"HAPROXY_0_VHOST":"zero.example.com"`.
+
+## logging
+- kibana: [http://localhost:8084/](http://localhost:8084/)
+- logspout: [http://localhost:8083/logs](http://localhost:8083/logs)
+
+## monitoring
+- cadvisor: [http://localhost:8082/](http://localhost:8082/)
+
 
 # todo
 - use telegraf (with httpjson input e.g. for marathon metrics) and influxdb to monitor metrics

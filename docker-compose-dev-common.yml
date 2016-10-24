@@ -100,15 +100,3 @@ services:
         - /usr/bin/docker:/usr/bin/docker
       ports:
         - "8081:8080"
-
-    ## docker registry
-    registry:
-      container_name: knecht-registry1
-      image: registry:2.5.1
-      restart: unless-stopped
-      environment:
-        - STORAGE_PATH=/registry
-      volumes:
-        - ./docker-data/registry-stuff:/registry
-      ports:
-        - "5001:5000"

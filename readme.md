@@ -18,17 +18,16 @@ A local development build environment using mesos, marathon, jenkins and a lot o
 ![logo](https://raw.githubusercontent.com/theborakompanioni/knecht-docker/master/assets/diagram.jpg)
 
 # environment
-HAProxy: http://localhost:11090/haproxy?stats
-marathon: http://localhost:8080/
-kibana: http://localhost:8084/
-
+- HAProxy: [http://localhost:11090/haproxy?stats](http://localhost:11090/haproxy?stats)
+- marathon: [http://localhost:8080/](http://localhost:8080/)
+- kibana: [http://localhost:8084/](http://localhost:8084/)
 
 ## marathon-lb (work in progress)
-to use haproxy for docker containers use labels "HAPROXY_GROUP":"external" and "HAPROXY_0_VHOST":"zero.example.com".
+to use haproxy for docker containers use labels `"HAPROXY_GROUP":"external"` and `"HAPROXY_0_VHOST":"zero.example.com"`.
 
 # todo
 - use telegraf (with httpjson input e.g. for marathon metrics) and influxdb to monitor metrics
-- use marathon-lb as loadbalancer
+- use marathon-lb as loadbalancer (work in progress)
 
 # links
 - https://container-solutions.com/continuous-delivery-with-docker-on-mesos-in-less-than-a-minute/

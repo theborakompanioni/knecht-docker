@@ -73,6 +73,22 @@ services:
       command: --master zk://zookeeper:2181/mesos --zk zk://zookeeper:2181/marathon
 
 
+    marathonlb:
+      image: mesosphere/marathon-lb:v1.4.1
+      restart: unless-stopped
+      # must alter iptables otherwise:
+      # "can't initialize iptables table `filter': Permission denied (you must be root)"
+      privileged: true
+      environment:
+        - PORTS=9090
+      ports:
+        - "11080:80"
+        - "11443:443"
+        - "11090:9090"
+        - "11091:9091"
+      command:  sse --health-check --group external --marathon http://marathon:8080
+
+
     ## jenkins build server
     jenkins:
       image: lkwg82/jenkins_with_docker

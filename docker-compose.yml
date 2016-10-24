@@ -57,6 +57,19 @@ services:
     links:
       - zookeeper:zookeeper
 
+  marathonlb:
+    extends:
+      file: docker-compose-dev-common.yml
+      service: marathonlb
+    container_name: knecht-marathon-lb1
+    depends_on:
+      - zookeeper
+      - marathon
+      - master
+    links:
+      - zookeeper:zookeeper
+      - marathon:marathon
+      - master:"master.mesos"
 
   jenkins:
     extends:

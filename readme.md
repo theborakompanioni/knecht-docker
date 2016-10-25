@@ -56,6 +56,13 @@ to use haproxy for docker containers use labels `"HAPROXY_GROUP":"external"` and
 - use marathon-lb as loadbalancer (work in progress)
 - evaluate [consul](https://consul.io)
 
+# troubleshooting
+## "Connection refused"/"Name or service not known."
+Use DOCKER_OPTS to modify the daemon startup options.
+
+add following to entry to `/etc/defaut/docker`
+- `DOCKER_OPTS="--dns 8.8.8.8"` (or a nameserver of your choice)
+
 # links
 - https://container-solutions.com/continuous-delivery-with-docker-on-mesos-in-less-than-a-minute/
 - https://github.com/ContainerSolutions/cd_demo

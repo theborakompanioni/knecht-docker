@@ -20,6 +20,13 @@ A local development build environment using mesos, marathon, jenkins and a lot o
 
 ![logo](https://raw.githubusercontent.com/theborakompanioni/knecht-docker/master/assets/diagram.jpg)
 
+# getting started
+```
+> git clone https://github.com/theborakompanioni/knecht-docker.git
+> cd knecht-docker
+> docker-compose up
+```
+
 # environment
 
 ## build

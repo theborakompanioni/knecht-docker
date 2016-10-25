@@ -7,6 +7,7 @@ A local development build environment using mesos, marathon, jenkins and a lot o
 - [docker-registry](https://docs.docker.com/registry/)
 - [docker-registry-frontend](https://github.com/kwk/docker-registry-frontend)
 - [elasticsearch](https://www.elastic.co/products/elasticsearch)
+- [gitlab] (https://github.com/sameersbn/docker-gitlab)
 - [jenkins](https://jenkins.io/)
 - [kibana](https://www.elastic.co/products/kibana)
 - [logspout](https://github.com/gliderlabs/logspout)
@@ -22,6 +23,7 @@ A local development build environment using mesos, marathon, jenkins and a lot o
 # environment
 
 ## build
+- gitlab: [http://localhost:10080/](http://localhost:10080/)
 - jenkins: [http://localhost:8081/](http://localhost:8081/)
 - docker-registry: [https://localhost:8443/](https://localhost:8443/)
 
@@ -45,6 +47,7 @@ to use haproxy for docker containers use labels `"HAPROXY_GROUP":"external"` and
 # todo
 - use telegraf (with httpjson input e.g. for marathon metrics) and influxdb to monitor metrics
 - use marathon-lb as loadbalancer (work in progress)
+- evaluate [consul](https://consul.io)
 
 # links
 - https://container-solutions.com/continuous-delivery-with-docker-on-mesos-in-less-than-a-minute/

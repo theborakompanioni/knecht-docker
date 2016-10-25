@@ -14,3 +14,18 @@ services:
     ports:
       - "8082:8080"
 
+  #consul:
+  #  image: qnib/consul
+  #  restart: unless-stopped
+  #  privileged: true
+  #  environment:
+  #    - DC_NAME=qnib
+  #    - RUN_SERVER=true
+  #    - BOOTSTRAP_CONSUL=true
+  #  volumes:
+  #    - ./docker-data/consul/data:/consul/data:rw
+  #    - ./dockerfiles/consul/config:/consul/config:ro
+  #  dns: 127.0.0.1
+  #  ports:
+  #    - "8500:8500"
+

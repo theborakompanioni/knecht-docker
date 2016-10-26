@@ -1,8 +1,8 @@
 version: '2'
 
-networks:
-  metrics:
-    driver: bridge
+#networks:
+#  metrics:
+#    driver: bridge
 
 services:
   grafana:
@@ -31,6 +31,7 @@ services:
   telegraf:
     restart: unless-stopped
     networks:
+      - development
       - logging
       - metrics
     volumes:

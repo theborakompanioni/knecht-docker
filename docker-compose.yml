@@ -5,6 +5,10 @@ networks:
     driver: bridge
   metrics:
     driver: bridge
+  gitlab:
+    driver: bridge
+  development:
+    driver: bridge
 
 services:
 
@@ -214,10 +218,12 @@ services:
       - influxdb
       - elasticsearch
       - zookeeper
+      - marathonlb
     links:
       - influxdb:influxdb
       - elasticsearch:elasticsearch
       - zookeeper:zookeeper
+      - marathonlb:marathonlb
 ###
 # TICK stack + grafana (end)
 ###

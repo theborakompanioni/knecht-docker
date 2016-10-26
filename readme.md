@@ -50,6 +50,11 @@ to use haproxy for docker containers use labels `"HAPROXY_GROUP":"external"` and
 - grafana: [http://localhost:18000/](http://localhost:18000/)
 - influxdb: [http://localhost:18083/](http://localhost:18083/)
 
+Telegraf sends metrics on:
+- docker
+- elasticsearch
+- haproxy (marathonlb)
+
 ## logging
 - kibana: [http://localhost:8084/](http://localhost:8084/)
 - logspout: [http://localhost:8083/logs](http://localhost:8083/logs)
@@ -69,6 +74,11 @@ Use DOCKER_OPTS to modify the daemon startup options.
 
 add following to entry to `/etc/defaut/docker`
 - `DOCKER_OPTS="--dns 8.8.8.8"` (or a nameserver of your choice)
+
+# known issues
+- on startup marathonlb fails to establish a new connection ([Errno 111] Connection refused) to marathon.
+  can take up to three minutes to reconnect successfully - triggers telegraf errors
+- sometimes mesos-slave does not come up - can be fixed by removing directory `docker-data/mesosslave-stuff/tmp`
 
 # links
 - https://container-solutions.com/continuous-delivery-with-docker-on-mesos-in-less-than-a-minute/

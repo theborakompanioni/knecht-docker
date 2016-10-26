@@ -1,8 +1,8 @@
 version: '2'
 
-networks:
-  logging:
-    driver: bridge
+#networks:
+#  logging:
+#    driver: bridge
 
 services:
   elasticsearch:

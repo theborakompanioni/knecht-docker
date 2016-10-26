@@ -219,11 +219,15 @@ services:
       - elasticsearch
       - zookeeper
       - marathonlb
+      - master
+      - slave
     links:
       - influxdb:influxdb
       - elasticsearch:elasticsearch
       - zookeeper:zookeeper
       - marathonlb:marathonlb
+      - master:master
+      - slave:slave
 ###
 # TICK stack + grafana (end)
 ###

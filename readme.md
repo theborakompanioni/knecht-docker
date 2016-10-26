@@ -54,6 +54,7 @@ Telegraf sends metrics on:
 - docker
 - elasticsearch
 - haproxy (marathonlb)
+- mesos
 
 ## logging
 - kibana: [http://localhost:8084/](http://localhost:8084/)

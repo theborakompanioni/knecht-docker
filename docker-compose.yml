@@ -3,7 +3,7 @@ version: '2'
 networks:
   logging:
     driver: bridge
-  dockerregistry:
+  metrics:
     driver: bridge
 
 services:
@@ -29,7 +29,6 @@ services:
       service: zookeeper
     container_name: knecht-zookeeper1
 
-
   master:
     extends:
       file: docker-compose-dev-common.yml
@@ -39,7 +38,6 @@ services:
       - zookeeper
     links:
       - zookeeper:zookeeper
-
 
   slave:
     extends:
@@ -52,7 +50,6 @@ services:
     links:
       - zookeeper:zookeeper
       - master:master
-
 
   marathon:
     extends:
@@ -156,7 +153,6 @@ services:
     build: dockerfiles/elasticsearch
     container_name: knecht-elasticsearch1
 
-
   logstash:
     extends:
       file: docker-compose-elk-common.yml
@@ -166,14 +162,12 @@ services:
     links:
       - elasticsearch:elasticsearch
 
-
   kibana:
     extends:
       file: docker-compose-elk-common.yml
       service: kibana
     build: dockerfiles/kibana
     container_name: knecht-kibana1
-
 
   logspout:
     extends:
@@ -184,4 +178,46 @@ services:
       - logstash:logstash
 ###
 # ELK stack + logspout (end)
+###
+
+
+###
+# TICK stack + grafana
+###
+  influxdb:
+    extends:
+      file: docker-compose-tick-common.yml
+      service: influxdb
+    build: dockerfiles/influxdb
+    container_name: knecht-influxdb1
+
+  grafana:
+    extends:
+      file: docker-compose-tick-common.yml
+      service: grafana
+    build: dockerfiles/grafana
+    container_name: knecht-grafana1
+    depends_on:
+      - influxdb
+      - elasticsearch
+    links:
+      - influxdb:influxdb
+      - elasticsearch:elasticsearch
+
+  telegraf:
+    extends:
+      file: docker-compose-tick-common.yml
+      service: telegraf
+    build: dockerfiles/telegraf
+    container_name: knecht-telegraf1
+    depends_on:
+      - influxdb
+      - elasticsearch
+      - zookeeper
+    links:
+      - influxdb:influxdb
+      - elasticsearch:elasticsearch
+      - zookeeper:zookeeper
+###
+# TICK stack + grafana (end)
 ###

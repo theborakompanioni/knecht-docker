@@ -7,7 +7,9 @@ A local development build environment using mesos, marathon, jenkins and a lot o
 - [docker-registry](https://docs.docker.com/registry/)
 - [docker-registry-frontend](https://github.com/kwk/docker-registry-frontend)
 - [elasticsearch](https://www.elastic.co/products/elasticsearch)
-- [gitlab] (https://github.com/sameersbn/docker-gitlab)
+- [gitlab](https://github.com/sameersbn/docker-gitlab)
+- [grafana](https://github.com/grafana/grafana)
+- [influxdb](https://www.influxdata.com/time-series-platform/influxdb/)
 - [jenkins](https://jenkins.io/)
 - [kibana](https://www.elastic.co/products/kibana)
 - [logspout](https://github.com/gliderlabs/logspout)
@@ -15,6 +17,7 @@ A local development build environment using mesos, marathon, jenkins and a lot o
 - [marathon](https://mesosphere.github.io/marathon/)
 - [marathon-lb](https://github.com/mesosphere/marathon-lb/)
 - [mesos](https://mesos.apache.org/)
+- [telegraf](https://www.influxdata.com/time-series-platform/telegraf/)
 - [zookeeper](https://zookeeper.apache.org/)
 
 
@@ -42,6 +45,10 @@ A local development build environment using mesos, marathon, jenkins and a lot o
 - HAProxy: [http://localhost:11090/haproxy?stats](http://localhost:11090/haproxy?stats)
 
 to use haproxy for docker containers use labels `"HAPROXY_GROUP":"external"` and e.g. `"HAPROXY_0_VHOST":"zero.example.com"`.
+
+## metrics
+- grafana: [http://localhost:18000/](http://localhost:18000/)
+- influxdb: [http://localhost:18083/](http://localhost:18083/)
 
 ## logging
 - kibana: [http://localhost:8084/](http://localhost:8084/)

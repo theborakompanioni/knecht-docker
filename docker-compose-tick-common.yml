@@ -1,0 +1,38 @@
+version: '2'
+
+networks:
+  metrics:
+    driver: bridge
+
+services:
+  grafana:
+    restart: unless-stopped
+    ports:
+      - "18000:3000"
+    networks:
+      - logging
+      - metrics
+    volumes:
+      - ./docker-data/tick-stuff/grafana/:/var/lib/grafana:z
+      - ./docker-data/tick-stuff/grafana/log:/var/log/grafana
+
+
+  influxdb:
+    restart: unless-stopped
+    ports:
+      - "18083:8083"
+      - "18086:8086"
+    networks:
+      - metrics
+    volumes:
+      - ./docker-data/tick-stuff/influxdb:/var/lib/influxdb:z
+
+
+  telegraf:
+    restart: unless-stopped
+    networks:
+      - logging
+      - metrics
+    volumes:
+      - /var/run/utmp:/var/run/utmp:ro
+      - /var/run/docker.sock:/var/run/docker.sock

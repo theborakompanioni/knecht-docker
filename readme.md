@@ -54,6 +54,7 @@ Telegraf sends metrics on:
 - docker
 - elasticsearch
 - haproxy (marathonlb)
+- zookeeper
 - mesos
 
 ## logging

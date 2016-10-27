@@ -218,6 +218,7 @@ services:
       - influxdb
       - elasticsearch
       - zookeeper
+      - marathon
       - marathonlb
       - master
       - slave
@@ -225,6 +226,7 @@ services:
       - influxdb:influxdb
       - elasticsearch:elasticsearch
       - zookeeper:zookeeper
+      - marathon:marathon
       - marathonlb:marathonlb
       - master:master
       - slave:slave

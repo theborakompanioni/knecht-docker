@@ -66,8 +66,8 @@ Telegraf sends metrics on:
 
 
 # todo
-- use telegraf (with httpjson input e.g. for marathon metrics) and influxdb to monitor metrics
 - use marathon-lb as loadbalancer (work in progress)
+- automate currently manual configuration steps
 - evaluate [consul](https://consul.io)
 
 # troubleshooting

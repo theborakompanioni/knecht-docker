@@ -1,14 +1,30 @@
 version: '2'
 
 networks:
-  logging:
-    driver: bridge
-  metrics:
-    driver: bridge
-  gitlab:
-    driver: bridge
   development:
     driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.201.0.0/16
+  gitlab:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.202.0.0/16
+  logging:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.203.0.0/16
+  metrics:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.204.0.0/16
 
 services:
 
